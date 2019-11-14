@@ -22,55 +22,45 @@ def getFilms250():
     return films
 
 def csvFormat(films, userDelimiter):
-    with open('new_film_base.csv', 'w', newline='') as file:
+    with open('new_film_base.csv', 'w', newline='', encoding="utf-8") as file:
         header = ['Position', 'Title', 'Year', 'imdbRanking']
         film_writer = csv.writer(file, delimiter=userDelimiter)
         film_writer.writerow(header)
         film_writer.writerows(films)
-    file.close
+
 def jsonFormat(films):
-    with open('new_film_base.json', 'w', encoding='utf8') as file:
+    with open('new_film_base.json', 'w', encoding='utf-8') as file:
         arr = []
-        for i in films:
+        for position, title, year, rank in films:
             x = {
-                "position": i[0],
-                "title": i[1],
-                "year": i[2],
-                "imbdRanking": i[3]
+                "position": position,
+                "title": title,
+                "year": year,
+                "imbdRanking": rank
             }
             arr.append(x)
         movies = {
             "filmsRequested":arr
         }
         json.dump(movies, file, indent=True, ensure_ascii=False)
-    file.close
+
 
 def handleUserFilm(prompt):
     #While user enters a proper input a function will get list of wanted films
     while True:
-        try:
-            userMessageFilm = input((prompt))
-        except ValueError:
-            print('Input unkown')
+        userMessageFilm = input((prompt))
         if userMessageFilm == 'films250':
             getFilms250()
             break
-        elif userMessageFilm != 'films250':
+        else:
             print('No such data')
             continue
     return userMessageFilm
 
 def handleUserFormat(prompt):
     while True:
-        try:
-            userMessageFormat = input((prompt))
-        except ValueError:
-            print('Input unkown')
-            continue
-        if userMessageFormat != 'csv' and userMessageFormat != 'json':
-            print('Format unkown')
-            continue
-        elif userMessageFormat == 'json':
+        userMessageFormat = input((prompt))
+        if userMessageFormat == 'json':
             jsonFormat(films)
             break
         elif userMessageFormat == 'csv':
@@ -82,6 +72,9 @@ def handleUserFormat(prompt):
                 else:
                     csvFormat(films, delimiter)
                     break
+        else:
+            print('Format unkown')
+            continue
 
         return userMessageFormat
 
